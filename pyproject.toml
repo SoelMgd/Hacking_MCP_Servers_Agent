@@ -10,4 +10,6 @@ dependencies = [
     "requests>=2.32.4",
     "smolagents[litellm]>=1.18.0",
     "uvicorn>=0.34.3",
+    "starlette>=0.36.3",
+    "anyio>=4.3.0",
 ]
