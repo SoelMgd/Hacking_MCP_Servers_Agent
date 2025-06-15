@@ -17,4 +17,7 @@ def sent_request_to_mcp(query:str)-> str:
     }
     
     response = requests.post(url, headers=headers, json=data)
+
+    
     return response.json()
+
