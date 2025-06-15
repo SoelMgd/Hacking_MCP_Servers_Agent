@@ -1,7 +1,7 @@
 from smolagents import LiteLLMModel, HfApiModel
 import os
 from dotenv import load_dotenv
-from agents import create_api_auditor_agent, create_manager_agent, create_code_reader_agent, create_code_auditor_agent
+from agents import create_api_auditor_agent, create_manager_agent, create_code_reader_agent, create_code_auditor_agent, create_exploitation_agent
 
 load_dotenv()
 
@@ -12,7 +12,8 @@ model = LiteLLMModel(model_id="claude-3-5-sonnet-20241022", api_key=os.getenv("A
 api_auditor_agent = create_api_auditor_agent(model)
 code_reader_agent = create_code_reader_agent(model)
 code_auditor_agent = create_code_auditor_agent(model, code_reader_agent)
-manager_agent = create_manager_agent(model, api_auditor_agent, code_reader_agent)
+exploitation_agent = create_exploitation_agent(model)
+manager_agent = create_manager_agent(model, api_auditor_agent, code_reader_agent, exploitation_agent)
 
 answer = manager_agent.run("""You are an analysis agent tasked with understanding and documenting the internal structure and behavior of an MCP (Model Context Protocol) server, which is under test by your own team in a hackathon setting.
 

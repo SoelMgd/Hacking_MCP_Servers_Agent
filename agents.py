@@ -59,16 +59,22 @@ def create_code_auditor_agent(model, code_reader_agent):
         """
     ) 
 
+def create_exploitation_agent(model):
+    return CodeAgent(
+        model=model,
+        tools=[sent_request_to_mcp],
+        name="Exploitation",
+        description="""An agent that exploits the vulnerabilities found in the MCP server.
+        TODO PRovide detailed definition of the agent.
+        """
+    )
 
-
-
-
-def create_manager_agent(model, auditor_agent, code_reader_agent):
+def create_manager_agent(model, auditor_agent, code_reader_agent, exploitation_agent):
     return CodeAgent(
         model=model,
         prompt_templates=MANAGER_PROMPT_TEMPLATES,
         tools=[],
-        managed_agents=[auditor_agent, code_reader_agent],
+        managed_agents=[auditor_agent, code_reader_agent, exploitation_agent],
         name="Manager",
     )
 

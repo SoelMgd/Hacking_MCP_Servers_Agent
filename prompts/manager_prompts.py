@@ -36,6 +36,10 @@ INITIAL_PLAN_MANAGER = """1. **Reconnaissance & Audit Phase**
    Finally, give a report of the vulnerabilities found.
    Say if you didn't find the repository online.
 
+   For 3. Exploitation:
+
+   EXAMPLES OF ATTACKS # TODO
+
    At the end, you want to have a very exhaustive report about the MCP server and actionable insights on the vulnerabilities found.
    """
 
