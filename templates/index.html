@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MCPirats - FastAPI Version</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.0/ansi_up.min.js"></script>
+  <style>
+  body {
+    font-family: sans-serif;
+    max-width: 90vw; /* ✅ Flexible */
+    margin: 40px auto;
+    text-align: center;
+  }
+
+  input, button {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+  }
+
+  input {
+    width: 70%;       /* ✅ Moins large */
+    max-width: 600px; /* ✅ Limite sur grand écran */
+  }
+
+  #console {
+    border: 1px solid #ddd;
+    padding: 20px;
+    height: 50vh;         /* ✅ Dynamique */
+    max-height: 70vh;
+    min-height: 200px;
+    width: 95vw;
+    max-width: 1200px;
+    margin: 20px auto;
+    overflow-y: auto;
+    background: #f9f9f9;
+    text-align: left;
+    box-sizing: border-box;
+    overflow: auto;      /* ✅ Autorise scroll sur les deux axes */
+    resize: both;        /* ✅ Autorise le redimensionnement manuel */
+  }
+
+  #report {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    text-align: left;
+    width: 90vw;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .button-group {
+    margin-top: 10px;
+  }
+
+  button {
+    margin: 0 5px;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  /* ✅ Loader pirate animé */
+  #loader {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 1.5rem;
+    animation: spin 1s linear infinite;
+    transform-origin: 50% 50%; /* ✅ Centre la rotation */
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 600px) {
+    input, button {
+      font-size: 0.9rem;
+    }
+
+    #console {
+      height: 40vh;
+    }
+  }
+</style>
+
+
+</head>
+<body>
+  <h1>🛡️ MCPirats - Server Audit</h1>
+
+<form id="auditForm">
+  <label for="mcp_url">🔗 MCP URL:</label><br>
+  <input type="text" id="mcp_url" name="mcp_url"
+    placeholder="https://jdelavande-hack-me-mcp.hf.space/mcp"
+    value="https://jdelavande-hack-me-mcp.hf.space/mcp"
+    style="width: 70%;" required><br><br>
+
+  <label for="code_url">📂 Code Repository URL (optional):</label><br>
+  <input type="text" id="code_url" name="code_url"
+    placeholder="https://github.com/SoAnVa/MCP_Hackathon"
+    value="https://github.com/SoAnVa/MCP_Hackathon"
+    style="width: 70%;"><br><br>
+
+    <div class="button-group">
+      <button type="submit" id="launchBtn">🔍 Launch Audit</button>
+      <span id="loader" style="display: none;">🏴‍☠️</span>
+      <button type="button" id="stopBtn">⏹️ Stop Audit</button>
+    </div>
+
+  </form>
+
+  <h2>📜 Console</h2>
+  <div id="console"></div>
+
+  <!-- <h2>📄 Final Markdown Report</h2>
+  <div id="report"></div> -->
+  <script>
+  const form = document.getElementById('auditForm');
+  const consoleDiv = document.getElementById('console');
+  const launchBtn = document.getElementById('launchBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const loader = document.getElementById('loader');
+
+  let controller = null;
+  let sessionId = null;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    consoleDiv.innerHTML = '';
+
+    launchBtn.disabled = true;
+    loader.style.display = 'inline-block'; // ✅ Affiche le loader
+
+    controller = new AbortController();
+
+    const formData = new FormData(form);
+    const response = await fetch('/launch', {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    // ✅ Un seul <pre> pour tout afficher
+    const pre = document.createElement('pre');
+    consoleDiv.appendChild(pre);
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+
+        // Si on reçoit l'ID de session (id:xxxx)
+        if (chunk.startsWith("id:")) {
+          sessionId = chunk.replace("id:", "").trim();
+          console.log("Session ID:", sessionId);
+          continue;
+        }
+
+        pre.textContent += chunk;
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+      }
+    } catch (err) {
+      const p = document.createElement('div');
+      p.textContent = 'Stream stopped or error.';
+      consoleDiv.appendChild(p);
+    } finally {
+      launchBtn.disabled = false;
+      loader.style.display = 'none'; // ✅ Cache le loader à la fin
+    }
+  });
+
+  stopBtn.addEventListener('click', async () => {
+    if (controller) {
+      controller.abort();
+      controller = null;
+    }
+    if (sessionId) {
+      await fetch('/stop', {
+        method: 'POST',
+        body: new URLSearchParams({ session_id: sessionId }),
+      });
+      sessionId = null;
+    }
+    launchBtn.disabled = false;
+    loader.style.display = 'none'; // ✅ Cache le loader quand on stoppe
+  });
+</script>
+
+
+</body>
+</html>
