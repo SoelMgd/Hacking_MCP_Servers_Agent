@@ -152,8 +152,7 @@ A **master attacker agent** coordinates **three specialized sub-agents**, each b
 
 All agents use **Anthropic’s Claude** as their underlying LLM — each step is natural language driven.
 
-The objective is to gather as much information as possible about the MCP and list potential vulnerabilities.
-These details are then passed to the exploitation whose goal is to try to exploit them and interating on them.
+##### The objective is to gather as much information as possible about the MCP and list potential vulnerabilities. These details are then passed to the exploitation whose goal is to try to exploit them and interating on them.
 ---
 
 ### ⚙️ **Agent Orchestration**
