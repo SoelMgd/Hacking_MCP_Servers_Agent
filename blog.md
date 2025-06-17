@@ -1,9 +1,9 @@
-# Agent hackathon
+# 💥 Building a Vulnerable Bank MCP — Then Automating an Agent to Hack It
 
 
 ## 📍 Introduction
 
-Recently, we took part in the **Hugging Face × Anthropic Hackathon**, exploring what happens when AI agents interact with real-world tasks in natural language.
+Recently, we took part in the [**Hugging Face × Anthropic Hackathon**](https://huggingface.co/Agents-Hack), exploring what happens when AI agents interact with real-world tasks in natural language.
 <!--
 ![image/jpeg](https://cdn-uploads.huggingface.co/production/uploads/67ecf57f1f0e7c18eec758c9/56lssL1uwNRYgfx1xFZwu.jpeg)-->
 
@@ -21,11 +21,17 @@ To push this further, we also built an **attacker agent** — an orchestrator wi
 
 This post shares what we built, how it works, and what we learned about securing language-based agent systems.
 
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/67ecf57f1f0e7c18eec758c9/84851LoaTG0lVrXqCb8_h.png)
+
+<p align="center">
+  <img src="https://cdn-uploads.huggingface.co/production/uploads/67ecf57f1f0e7c18eec758c9/84851LoaTG0lVrXqCb8_h.png" width="100%">
+</p>
 
 ## 🏦 The Fake Bank MCP
 
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/67ecf57f1f0e7c18eec758c9/3Hb2PCiuAk9ekbGIcNHTw.png)
+<p align="center">
+  <img src="https://cdn-uploads.huggingface.co/production/uploads/67ecf57f1f0e7c18eec758c9/3Hb2PCiuAk9ekbGIcNHTw.png" width="100%">
+</p>
+
 
 We started with a simple idea: a conversational **bank assistant**, built with **Smol Agent** and **Claude 4**, that users can talk to naturally. Behind the scenes, we set up an **MCP (Model Context Protocol)** to handle requests like:
 
@@ -119,8 +125,10 @@ These tests confirm how **prompt injection + weak backend design** can lead to r
 
 ## 🕵️ The Attacking Agent
 
+<p align="center">
+  <img src="https://cdn-uploads.huggingface.co/production/uploads/67ecf57f1f0e7c18eec758c9/R_ATsAIOZGCyLHmzj2Hdi.png" alt="Remote Code Execution" width="100%">
+</p>
 
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/67ecf57f1f0e7c18eec758c9/R_ATsAIOZGCyLHmzj2Hdi.png)
 
 To push this experiment further, we didn’t stop at manual testing.
 We built an **automated attacking agent**, using **Smol Agents** powered by **Anthropic’s Claude** models.
